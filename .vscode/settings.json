@@ -1,6 +1,6 @@
 {
-    "python.pythonPath": "D:\\Miniconda3\\envs\\crawler\\python.exe",
-    "python.linting.pep8Enabled": false,
+    "python.pythonPath": "/media/tma/DATA/miniconda3/envs/ttsv/bin/python",
+    "python.linting.pycodestyleEnabled": false,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }

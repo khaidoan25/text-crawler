@@ -12,6 +12,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import platform
 import pandas as pd
+import os
+import glob
 # from scrapy.items import CrawlerItem
 
 class CrawlerTextSpider(Spider):
@@ -139,24 +141,37 @@ class CrawlerWavSpider(Spider):
     
     def __init__(self):
         if platform.system() == "Linux":
-            self.driver = webdriver.Chrome("/home/ddkhai/Documents/text-crawler/crawler/linux/chromedriver")
+            self.driver = webdriver.Chrome("/media/tma/DATA/Khai-folder/text-to-speech/text-crawler/crawler/linux/chromedriver")
         elif platform.system() == "Windows":
             self.driver = webdriver.Chrome("D:\\github\\text-crawler\\crawler\\windows\\chromedriver.exe")
 
         self.data = pd.read_csv("metadata.csv", header=None, sep="|")
+        self.alr_crawled = " ".join(glob.glob(os.path.join("/media/tma/DATA/Khai-folder/text-to-speech/text-crawler/crawler/waves_crawl_12072020", "*.mp3")))
 
     def parse(self, response):
         self.driver.get(response.url)
         iframe = self.driver.find_element_by_css_selector('iframe')
         self.driver.switch_to_frame(iframe)
-        element = self.driver.find_element_by_xpath("/html/body/form/textarea")
         for i in range(len(self.data)):
+            if self.data.iloc[i, 0] in self.alr_crawled:
+                continue
             file_name = self.data.iloc[i, 0] + ".mp3"
             text = self.data.iloc[i, 1]
+
+            # Input text
+            element = self.driver.find_element_by_xpath("/html/body/form/textarea")
             element.clear()
             element.send_keys(text)
+
+            # Adjust speed
+            speed_element = self.driver.find_element_by_xpath("/html/body/form/input[4]")
+            self.driver.execute_script("arguments[0].value = '0.85';", speed_element)
+
+            # Submit
             self.driver.find_element_by_xpath("/html/body/form/input[5]").click()
             time.sleep(2)
+
+            # Get link to download file
             download_element = self.driver.find_element_by_xpath("/html/body/audio/source")
             loader = ItemLoader(item=WavItem(), selector=download_element)
             relative_url = download_element.get_attribute("src")

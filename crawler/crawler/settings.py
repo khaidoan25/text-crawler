@@ -69,7 +69,7 @@ ITEM_PIPELINES = {
     "crawler.pipelines.WavPipeline": 1
 }
 
-FILES_STORE = 'D:\\github\\text-crawler\\crawler\\waves'
+FILES_STORE = '/media/tma/DATA/Khai-folder/text-to-speech/text-crawler/crawler/waves_crawl_12072020'
 DOWNLOAD_TIMEOUT = 1200
 
 # Enable and configure the AutoThrottle extension (disabled by default)
